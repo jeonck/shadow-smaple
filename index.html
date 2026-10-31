@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Interview Shadowing Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column. Composer on top, sentence cards below; a practice panel opens inside a card. */
+:root {
+  --bg:#eef1f4; --surface:#fff; --ink:#18212b; --muted:#5d6976; --line:#d6dde4;
+  --accent:#1d5c9e; --accent-soft:#e1ebf6; --mark:#fde68a;
+  --ok:#1f7a4d; --ok-soft:#dff3e8; --bad:#b4312b; --bad-soft:#fbe4e2; --warn:#8a5a00; --warn-soft:#fdf0d0;
+  --f-read:"Newsreader",Georgia,"Times New Roman",serif;
+  --f-ui:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#11161c; --surface:#19212a; --ink:#e6ebf0; --muted:#94a1ae; --line:#2b3640;
+    --accent:#7fb2ea; --accent-soft:#1d2d3f; --mark:#6b5a17;
+    --ok:#7fd3a4; --ok-soft:#173326; --bad:#f08a83; --bad-soft:#3b1f1d; --warn:#f0c36a; --warn-soft:#3a2d10; color-scheme: dark;
+  }
+}
+* { box-sizing:border-box; }
+html,body { margin:0; }
+body { background:var(--bg); color:var(--ink); font-family:var(--f-ui); font-size:15px; line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block: max(28px,env(safe-area-inset-top,0px)) calc(64px + env(safe-area-inset-bottom,0px)); }
+.wrap { max-width:720px; margin:0 auto; display:grid; gap:20px; }
+.eyebrow { font-family:var(--f-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+h1 { font-family:var(--f-read); font-weight:500; font-size:clamp(28px,6vw,38px); line-height:1.1; margin:2px 0 6px; text-wrap:balance; }
+.lede { color:var(--muted); margin:0; }
+.box { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; display:grid; gap:12px; }
+label.t { font-size:13px; font-weight:600; }
+textarea { width:100%; min-height:96px; resize:vertical; border:1px solid var(--line); border-radius:8px; padding:12px; background:var(--bg); color:var(--ink); font-family:var(--f-read); font-size:18px; line-height:1.5; }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.row { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.spread { justify-content:space-between; }
+.hint { font-size:12px; color:var(--muted); font-family:var(--f-mono); }
+button { font:inherit; cursor:pointer; border-radius:8px; border:1px solid var(--line); background:var(--surface); color:var(--ink); padding:8px 14px; }
+button:hover { border-color:var(--accent); }
+button.primary { background:var(--accent); color:var(--surface); border-color:var(--accent); font-weight:600; }
+button.primary:disabled { opacity:.45; cursor:default; }
+button.ghost { border-color:transparent; background:transparent; color:var(--muted); padding:6px 10px; font-size:13px; }
+button.ghost:hover { color:var(--ink); border-color:var(--line); }
+button.ghost.danger:hover { color:var(--bad); border-color:var(--bad); }
+button.rec { background:var(--bad); border-color:var(--bad); color:#fff; font-weight:600; }
+.voicebar { display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center; font-size:13px; color:var(--muted); }
+.voicebar label { display:flex; align-items:center; gap:8px; min-width:0; }
+select { font:inherit; font-size:13px; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:5px 8px; max-width:260px; }
+input[type=range] { accent-color:var(--accent); width:120px; }
+.rate { font-family:var(--f-mono); font-variant-numeric:tabular-nums; color:var(--ink); min-width:3.2em; }
+.notice { font-size:13px; color:var(--muted); background:var(--accent-soft); border-radius:8px; padding:10px 12px; }
+.notice.warn { background:var(--warn-soft); color:var(--warn); }
+.legend { display:flex; flex-wrap:wrap; gap:6px 18px; font-size:13px; color:var(--muted); }
+.legend .eg { font-family:var(--f-read); font-size:16px; color:var(--ink); }
+.listhead { display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid var(--line); padding-bottom:8px; }
+.listhead h2 { font-size:13px; font-weight:600; margin:0; }
+ol.cards { list-style:none; margin:0; padding:0; display:grid; gap:12px; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:10px; display:grid; }
+.card.playing { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+.say { all:unset; cursor:pointer; display:grid; grid-template-columns:40px 1fr; gap:14px; padding:16px 16px 10px; border-radius:10px 10px 0 0; }
+.say:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+.say:hover .play { background:var(--accent); color:var(--surface); }
+.play { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; background:var(--accent-soft); color:var(--accent); transition:background .15s,color .15s; }
+.play svg { width:16px; height:16px; fill:currentColor; }
+.text { font-family:var(--f-read); font-size:20px; line-height:1.85; min-width:0; overflow-wrap:anywhere; }
+.text .w { border-radius:3px; transition:background .08s; }
+.text .w.on { background:var(--mark); }
+.text b { font-weight:700; text-decoration:underline; text-decoration-color:var(--accent); text-decoration-thickness:2px; text-underline-offset:4px; }
+.text.plain b { font-weight:inherit; text-decoration:none; }
+.lk { position:relative; }
+.lk::after, .legend .arc::after { content:""; position:absolute; left:-.45em; right:-.45em; bottom:-.32em; height:.34em; border:2px solid var(--accent); border-top:none; border-radius:0 0 50% 50%/0 0 100% 100%; pointer-events:none; }
+.text.plain .lk::after { display:none; }
+.legend .arc { position:relative; display:inline-block; width:.4em; }
+.meta { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 10px; padding:0 10px 10px 70px; }
+.facts { font-family:var(--f-mono); font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
+.actions { display:flex; gap:2px; flex-wrap:wrap; }
+.confirm { display:flex; align-items:center; gap:8px; font-size:13px; }
+.empty { border:1px dashed var(--line); border-radius:10px; padding:28px 20px; text-align:center; color:var(--muted); }
+
+/* practice panel */
+.practice { border-top:1px solid var(--line); padding:14px 16px 16px; display:grid; gap:12px; background:color-mix(in srgb,var(--accent-soft) 35%,var(--surface)); border-radius:0 0 10px 10px; }
+.live { font-family:var(--f-read); font-size:17px; color:var(--muted); min-height:1.6em; overflow-wrap:anywhere; }
+.meter { height:6px; border-radius:3px; background:var(--line); overflow:hidden; }
+.meter > i { display:block; height:100%; width:0; background:var(--bad); transition:width .06s linear; }
+.score { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+.score .n { font-family:var(--f-read); font-size:44px; line-height:1; font-weight:500; font-variant-numeric:tabular-nums; }
+.score .l { font-size:14px; color:var(--muted); }
+.diff { font-family:var(--f-read); font-size:19px; line-height:1.9; overflow-wrap:anywhere; }
+.diff span { padding:1px 4px; border-radius:4px; }
+.diff .ok { background:var(--ok-soft); color:var(--ok); }
+.diff .miss { background:var(--bad-soft); color:var(--bad); text-decoration:line-through; text-decoration-thickness:1.5px; }
+.diff .skip { color:var(--muted); }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; }
+.stat { border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:8px 10px; min-width:0; }
+.stat .k { font-size:12px; color:var(--muted); }
+.stat .v { font-family:var(--f-mono); font-size:15px; font-variant-numeric:tabular-nums; }
+.stat .s { font-size:12px; color:var(--muted); }
+.tips { margin:0; padding-left:1.2em; font-size:13px; color:var(--muted); display:grid; gap:2px; }
+audio { width:100%; max-width:100%; }
+.toast { position:fixed; left:50%; transform:translateX(-50%); bottom:calc(20px + env(safe-area-inset-bottom,0px)); background:var(--ink); color:var(--bg); padding:8px 14px; border-radius:8px; font-size:13px; z-index:5; }
+[hidden] { display:none !important; }
+@media (max-width:480px) { .text{font-size:18px} .meta{padding-left:16px} .say{grid-template-columns:36px 1fr;gap:12px} .play{width:36px;height:36px} }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Shadowing practice</div>
+    <h1>Interview Shadowing Deck</h1>
+    <p class="lede">면접 영어 문장을 저장하고, 원어민 발음을 듣고, 내 목소리를 녹음해서 비교하세요.</p>
+  </header>
+
+  <div class="notice" id="privacy">
+    <b>마이크와 개인정보.</b> 녹음은 이 기기의 브라우저 안에서만 재생되고 서버로 업로드하지 않습니다. 저장한 문장도 이 브라우저에만 남습니다.
+    다만 Chrome과 Edge는 음성 인식을 위해 말소리를 브라우저 제공사의 인식 서버로 보냅니다.
+  </div>
+  <div class="notice warn" id="srWarn" hidden></div>
+
+  <form class="box" id="composer">
+    <label class="t" for="newText">새 문장</label>
+    <textarea id="newText" placeholder="In my previous role, I led the migration of seven CI/CD pipelines to Kubernetes…"></textarea>
+    <div class="row spread">
+      <span class="hint" id="draftFacts">0 words</span>
+      <div class="row">
+        <button type="button" id="previewBtn">미리 듣기</button>
+        <button type="submit" class="primary" id="saveBtn" disabled>저장</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="voicebar">
+    <label for="voiceSel">음성 <select id="voiceSel"><option>불러오는 중…</option></select></label>
+    <label for="rateIn">속도 <input type="range" id="rateIn" min="0.6" max="1.2" step="0.05" value="0.95"> <span class="rate" id="rateOut">0.95×</span></label>
+  </div>
+
+  <section>
+    <div class="listhead"><h2>저장한 문장 <span id="count"></span></h2>
+      <label for="marksIn" style="font-size:13px;display:flex;gap:6px;align-items:center;color:var(--muted)"><input type="checkbox" id="marksIn" checked> 강세·연음 표시</label></div>
+    <div class="legend" style="margin:10px 0">
+      <span><span class="eg"><b style="text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px">pan</b>el</span> 굵은 음절 = 강세</span>
+      <span><span class="eg">in<span class="arc"></span>a</span> 아래 호 = 연음</span>
+    </div>
+    <ol class="cards" id="cards"></ol>
+    <div class="empty" id="empty" hidden>아직 저장한 문장이 없어요. 위 입력칸에 문장을 붙여넣고 <b>저장</b>을 누르세요.</div>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
+  };
+  const els = { text:$("newText"), save:$("saveBtn"), preview:$("previewBtn"), form:$("composer"), cards:$("cards"), empty:$("empty"),
+    count:$("count"), voice:$("voiceSel"), rate:$("rateIn"), rateOut:$("rateOut"), draftFacts:$("draftFacts"), toast:$("toast"), marks:$("marksIn"), srWarn:$("srWarn") };
+
+  // ---------- text helpers ----------
+  const tokens = (t) => t.trim().match(/\S+/g) || [];
+  const norm = (w) => w.toLowerCase().replace(/[’‘]/g, "'").replace(/[^a-z0-9']/g, "");
+  const words = (t) => tokens(t).length;
+  const secs = (n, rate) => Math.max(1, Math.round(n / (140 * rate) * 60));
+  const facts = (t) => `${words(t)} words · ~${secs(words(t), +els.rate.value)}s`;
+
+  // ---------- stress / linking (rule-based estimate; hand-tuned annotations override) ----------
+  const FUNC = new Set("a an the and or but so if of in on at to for from by with as is am are was were be been being do does did have has had i me my we us our you your he him his she her it its they them their this that these those there here what which who whom whose when where why how not no than then just very can could will would shall should may might must about into over up out like".split(" "));
+  function autoAnn(text) {
+    const tk = tokens(text), stress = [], links = [];
+    tk.forEach((w, i) => {
+      const b = norm(w);
+      if (b.length > 2 && !FUNC.has(b)) stress.push({ i, part: "" });
+      const nx = tk[i + 1];
+      if (nx && /[a-z]$/i.test(w) && /^[aeiou]/i.test(nx)) links.push(i);
+    });
+    return { stress, links };
+  }
+  function wordSpans(text, ann) {
+    const frag = document.createDocumentFragment();
+    const stress = new Map((ann.stress || []).map((s) => [s.i, s.part]));
+    const links = new Set(ann.links || []);
+    const re = /\S+|\s+/g; let m, k = -1;
+    while ((m = re.exec(text))) {
+      if (/\s/.test(m[0][0])) {
+        if (links.has(k)) { const l = document.createElement("span"); l.className = "lk"; l.textContent = m[0]; frag.appendChild(l); }
+        else frag.appendChild(document.createTextNode(m[0]));
+        continue;
+      }
+      k++;
+      const w = m[0], s = document.createElement("span"); s.className = "w"; s.dataset.i = m.index;
+      if (stress.has(k)) {
+        const part = stress.get(k) || "";
+        const at = part ? w.toLowerCase().indexOf(part.toLowerCase()) : -1;
+        const b = document.createElement("b");
+        if (at >= 0) { s.append(w.slice(0, at)); b.textContent = w.slice(at, at + part.length); s.append(b, w.slice(at + part.length)); }
+        else { b.textContent = w; s.append(b); }
+      } else s.textContent = w;
+      frag.appendChild(s);
+    }
+    return frag;
+  }
+
+  // ---------- state ----------
+  const SEED = {
+    id: "seed-samsung", createdAt: Date.now(),
+    text: "In my previous Samsung interviews, the panel actually asked me whether I'd be interested in a director-level role — so this opportunity feels like the right level for me.",
+    stress: [{i:2,part:"pre"},{i:3,part:"Sam"},{i:6,part:"pan"},{i:7,part:"ac"},{i:13,part:"in"},{i:16,part:"rec"},{i:21,part:"tu"},{i:25,part:"right"},{i:26,part:"lev"}],
+    links: [7,10,12,13,14]
+  };
+  let items = store.get("sd.sentences", null);
+  if (!Array.isArray(items)) { items = store.get("sd.seeded", false) ? [] : [SEED]; store.set("sd.seeded", true); store.set("sd.sentences", items); }
+  const persist = () => store.set("sd.sentences", items);
+  let confirmId = null, playingId = null, openId = null;
+  let showMarks = store.get("sd.marks", true);
+  els.marks.checked = showMarks;
+  els.marks.addEventListener("change", () => { showMarks = els.marks.checked; store.set("sd.marks", showMarks); render(); });
+
+  // ---------- TTS ----------
+  const synth = window.speechSynthesis;
+  let voices = [];
+  const PREFERRED = [/Google US English/i, /Jenny.*Natural/i, /Aria.*Natural/i, /Guy.*Natural/i, /Ava/i, /Samantha/i, /Google UK English Female/i, /Daniel/i];
+  function loadVoices() {
+    if (!synth) return;
+    voices = synth.getVoices().filter((v) => /^en[-_]/i.test(v.lang));
+    if (!voices.length) return;
+    const saved = store.get("sd.voice", null);
+    let pick = voices.find((v) => v.name === saved);
+    if (!pick) for (const re of PREFERRED) { pick = voices.find((v) => re.test(v.name)); if (pick) break; }
+    if (!pick) pick = voices.find((v) => /en-US/i.test(v.lang)) || voices[0];
+    els.voice.innerHTML = "";
+    voices.forEach((v) => { const o = document.createElement("option"); o.value = v.name; o.textContent = `${v.name} (${v.lang})`; els.voice.appendChild(o); });
+    els.voice.value = pick.name;
+  }
+  if (!synth) { els.voice.innerHTML = "<option>사용 불가</option>"; els.voice.disabled = true; }
+  else { loadVoices(); synth.addEventListener?.("voiceschanged", loadVoices); setTimeout(loadVoices, 600); }
+  els.voice.addEventListener("change", () => store.set("sd.voice", els.voice.value));
+  const savedRate = store.get("sd.rate", null); if (savedRate) els.rate.value = savedRate;
+  const showRate = () => { els.rateOut.textContent = (+els.rate.value).toFixed(2) + "×"; els.draftFacts.textContent = facts(els.text.value); render(); };
+  els.rate.addEventListener("input", () => { store.set("sd.rate", els.rate.value); showRate(); });
+  els.rateOut.textContent = (+els.rate.value).toFixed(2) + "×";
+
+  function stopTTS() {
+    if (synth) synth.cancel();
+    if (playingId) { const c = document.querySelector(`[data-id="${CSS.escape(playingId)}"]`); c?.classList.remove("playing"); c?.querySelectorAll(".w.on").forEach((w) => w.classList.remove("on")); }
+    playingId = null;
+  }
+  function speak(text, id, mul = 1) {
+    if (!synth) return toast("이 브라우저는 음성 재생을 지원하지 않아요");
+    const same = playingId === id && synth.speaking;
+    stopTTS(); if (same) return;
+    const u = new SpeechSynthesisUtterance(text);
+    const v = voices.find((x) => x.name === els.voice.value);
+    if (v) { u.voice = v; u.lang = v.lang; } else u.lang = "en-US";
+    u.rate = +els.rate.value * mul;
+    const card = id ? document.querySelector(`[data-id="${CSS.escape(id)}"]`) : null;
+    const spans = card ? [...card.querySelectorAll(".text .w")] : [];
+    playingId = id; card?.classList.add("playing");
+    u.onboundary = (e) => {
+      if (!spans.length || (e.name && e.name !== "word")) return;
+      let hit = null; for (const s of spans) { if (+s.dataset.i <= e.charIndex) hit = s; else break; }
+      spans.forEach((s) => s.classList.toggle("on", s === hit));
+    };
+    u.onend = u.onerror = () => { if (playingId === id) stopTTS(); };
+    synth.speak(u);
+  }
+
+  // ---------- practice: record + recognize + score ----------
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const canRecord = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+  if (!window.isSecureContext) { els.srWarn.hidden = false; els.srWarn.textContent = "마이크는 https 주소에서만 켤 수 있어요. 배포한 https 주소로 접속해 주세요."; }
+  else if (!canRecord) { els.srWarn.hidden = false; els.srWarn.textContent = "이 브라우저는 녹음을 지원하지 않아요. 최신 Chrome, Edge, Safari에서 열어 주세요."; }
+  else if (!SR) { els.srWarn.hidden = false; els.srWarn.textContent = "이 브라우저는 음성 인식이 없어요. 녹음과 속도·멈춤 측정은 되지만 정확도 점수는 나오지 않습니다. 점수를 보려면 Chrome이나 Edge를 쓰세요."; }
+
+  // One mic connection per page visit: reused for every practice, muted between takes, released after 2 idle minutes.
+  let micStream = null, micIdle = null, micPerm = "prompt";
+  const isFile = location.protocol === "file:";
+  if (isFile && els.srWarn.hidden) {
+    els.srWarn.hidden = false;
+    els.srWarn.textContent = "파일을 직접 열어서 쓰면 Chrome이 녹음할 때마다 마이크 허용을 묻습니다. 터미널에서 이 파일이 있는 폴더로 가서 python3 -m http.server 8000 을 실행하고, 브라우저에서 http://localhost:8000 으로 여세요. 그러면 한 번만 허용하면 됩니다.";
+  }
+  async function getMic() {
+    clearTimeout(micIdle);
+    if (micStream && micStream.getTracks().some((t) => t.readyState === "live")) { micStream.getTracks().forEach((t) => (t.enabled = true)); return micStream; }
+    micStream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true } });
+    micPerm = "granted";
+    return micStream;
+  }
+  function parkMic() {
+    if (!micStream) return;
+    micStream.getTracks().forEach((t) => (t.enabled = false));
+    clearTimeout(micIdle); micIdle = setTimeout(releaseMic, 120000);
+  }
+  function releaseMic() { clearTimeout(micIdle); try { micStream && micStream.getTracks().forEach((t) => t.stop()); } catch {} micStream = null; }
+  try {
+    navigator.permissions && navigator.permissions.query({ name:"microphone" }).then((s) => { micPerm = s.state; s.onchange = () => { micPerm = s.state; render(); }; render(); }).catch(() => {});
+  } catch {}
+
+  const P = { id:null, phase:"idle", stream:null, rec:null, chunks:[], recog:null, finals:"", interim:"", ctx:null, timer:null, frames:[], level:0, t0:0, err:"", result:null, audioURL:null, doneRec:false, doneSR:false };
+
+  function resetPractice(keepResult) {
+    try { P.recog && (P.recog.onend = null, P.recog.abort()); } catch {}
+    try { P.rec && P.rec.state !== "inactive" && (P.rec.onstop = null, P.rec.stop()); } catch {}
+    if (P.stream) parkMic();
+    try { P.ctx && P.ctx.state !== "closed" && P.ctx.close().catch(() => {}); } catch {}
+    clearInterval(P.timer);
+    if (!keepResult && P.audioURL) { URL.revokeObjectURL(P.audioURL); P.audioURL = null; }
+    Object.assign(P, { phase:"idle", stream:null, rec:null, chunks:[], recog:null, finals:"", interim:"", ctx:null, timer:null, frames:[], level:0, err:"", doneRec:false, doneSR:!SR });
+    if (!keepResult) P.result = null;
+  }
+
+  async function startPractice(it) {
+    stopTTS();
+    if (P.phase === "rec") return;
+    resetPractice(false);
+    P.id = it.id; openId = it.id; P.phase = "starting"; render();
+    try {
+      P.stream = await getMic();
+    } catch (e) {
+      P.phase = "idle"; micPerm = (e && e.name === "NotAllowedError") ? "denied" : micPerm;
+      P.err = (e && (e.name === "NotAllowedError" || e.name === "SecurityError"))
+        ? "마이크 권한이 꺼져 있어요. 주소창 왼쪽 자물쇠 아이콘에서 마이크를 '허용'으로 바꾼 뒤 다시 눌러 주세요."
+        : (e && e.name === "NotFoundError") ? "마이크를 찾을 수 없어요. 마이크가 연결되어 있는지 확인해 주세요." : "마이크를 켜지 못했어요: " + (e && e.name || "오류");
+      return render();
+    }
+    // recorder
+    const mime = ["audio/webm;codecs=opus", "audio/mp4", "audio/webm", "audio/ogg;codecs=opus"].find((m) => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m));
+    P.rec = new MediaRecorder(P.stream, mime ? { mimeType:mime } : undefined);
+    P.rec.ondataavailable = (e) => { if (e.data && e.data.size) P.chunks.push(e.data); };
+    P.rec.onstop = () => { P.doneRec = true; maybeFinish(it); };
+    // level meter + silence analysis
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      P.ctx = new AC();
+      const src = P.ctx.createMediaStreamSource(P.stream);
+      const an = P.ctx.createAnalyser(); an.fftSize = 1024; src.connect(an);
+      const buf = new Float32Array(an.fftSize);
+      P.timer = setInterval(() => {
+        an.getFloatTimeDomainData(buf);
+        let s = 0; for (let i = 0; i < buf.length; i++) s += buf[i] * buf[i];
+        const rms = Math.sqrt(s / buf.length);
+        P.frames.push(rms); P.level = rms;
+        const bar = document.querySelector(".meter > i"); if (bar) bar.style.width = Math.min(100, rms * 600) + "%";
+      }, 50);
+    } catch {}
+    // recognizer
+    if (SR) {
+      const r = new SR(); r.lang = "en-US"; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
+      r.onresult = (e) => {
+        let fin = "", inter = "";
+        for (let i = 0; i < e.results.length; i++) { const t = e.results[i][0].transcript; if (e.results[i].isFinal) fin += t + " "; else inter += t; }
+        P.finals = fin; P.interim = inter;
+        const live = document.querySelector(".live"); if (live) live.textContent = (fin + inter).trim() || "듣는 중…";
+      };
+      r.onerror = (e) => {
+        if (e.error === "not-allowed" || e.error === "service-not-allowed") P.err = "음성 인식 권한이 없어요. 브라우저 설정에서 마이크를 허용해 주세요.";
+        else if (e.error === "network") P.err = "음성 인식 서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요.";
+        else if (e.error === "audio-capture") P.err = "이 기기에서는 녹음과 인식을 동시에 못 쓸 수 있어요. 녹음만 저장됩니다.";
+      };
+      r.onend = () => { if (P.phase === "rec") { try { r.start(); } catch {} } else { P.doneSR = true; maybeFinish(it); } }; // keep alive until the user stops
+      P.recog = r;
+    }
+    P.t0 = performance.now();
+    try { P.rec.start(); } catch {}
+    try { P.recog && P.recog.start(); } catch {}
+    P.phase = "rec"; render();
+  }
+
+  function stopPractice(it) {
+    if (P.phase !== "rec") return;
+    P.phase = "finishing"; P.durMs = performance.now() - P.t0;
+    clearInterval(P.timer);
+    parkMic();
+    try { P.rec.stop(); } catch { P.doneRec = true; }
+    if (P.recog) { try { P.recog.stop(); } catch { P.doneSR = true; } } else P.doneSR = true;
+    render();
+    setTimeout(() => { P.doneRec = true; P.doneSR = true; maybeFinish(it); }, 2500); // never hang
+  }
+
+  function maybeFinish(it) {
+    if (P.phase !== "finishing" || !P.doneRec || !P.doneSR) return;
+    const blob = P.chunks.length ? new Blob(P.chunks, { type:(P.rec && P.rec.mimeType) || "audio/webm" }) : null;
+    if (P.audioURL) URL.revokeObjectURL(P.audioURL);
+    P.audioURL = blob ? URL.createObjectURL(blob) : null;
+    const heard = (P.finals + " " + P.interim).trim();
+    P.result = analyze(it.text, heard, P.frames, P.durMs || 0);
+    P.result.heard = heard;
+    try { P.ctx && P.ctx.state !== "closed" && P.ctx.close().catch(() => {}); } catch {}
+    P.phase = "done"; render();
+  }
+
+  // LCS word alignment: which target words were heard, in order
+  function align(target, heard) {
+    // hyphenated words ("director-level") are compared as separate parts; a token counts as heard when all its parts are
+    const parts = [], owner = [];
+    target.forEach((w, ti) => w.split(/[-—–]+/).forEach((p) => { const n = norm(p); if (n) { parts.push(n); owner.push(ti); } }));
+    const R = heard.split(/[\s-]+/).map(norm).filter(Boolean);
+    const n = parts.length, m = R.length;
+    const dp = Array.from({ length:n + 1 }, () => new Int16Array(m + 1));
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--)
+      dp[i][j] = parts[i] === R[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    const hit = new Set(); let i = 0, j = 0;
+    while (i < n && j < m) {
+      if (parts[i] === R[j]) { hit.add(i); i++; j++; }
+      else if (dp[i + 1][j] >= dp[i][j + 1]) i++; else j++;
+    }
+    const need = new Map(), got = new Map();
+    owner.forEach((o, k) => { need.set(o, (need.get(o) || 0) + 1); if (hit.has(k)) got.set(o, (got.get(o) || 0) + 1); });
+    const ok = new Set(); need.forEach((c, o) => { if (got.get(o) === c) ok.add(o); });
+    return { ok, total:need.size, matched:ok.size, heardCount:m };
+  }
+
+  function analyze(text, heard, frames, durMs) {
+    const tk = tokens(text);
+    const out = { tk, hasSR:!!SR, durMs };
+    if (SR && heard) { const a = align(tk, heard); out.ok = a.ok; out.score = Math.round(a.matched / Math.max(1, a.total) * 100); out.heardCount = a.heardCount; out.matched = a.matched; out.total = a.total; }
+    // speech activity from level frames (50 ms each)
+    if (frames.length > 20) {
+      const sorted = [...frames].sort((x, y) => x - y);
+      const noise = sorted[Math.floor(sorted.length * 0.2)] || 0;
+      const thr = Math.max(0.012, noise * 3);
+      const act = frames.map((v) => v > thr);
+      let first = act.indexOf(true), last = act.lastIndexOf(true);
+      if (first >= 0 && last - first > 10) {
+        const gaps = []; let run = 0;
+        for (let i = first; i <= last; i++) { if (!act[i]) run++; else { if (run * 50 >= 350) gaps.push(run * 50); run = 0; } }
+        out.spanMs = (last - first + 1) * 50; out.pauses = gaps.length; out.longest = gaps.length ? Math.max(...gaps) : 0;
+        const spoken = out.matched != null ? out.heardCount : tk.length;
+        out.wpm = Math.round(spoken / (out.spanMs / 60000));
+      }
+    }
+    return out;
+  }
+
+  // ---------- rendering ----------
+  const PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg>';
+  const fmtDate = (ms) => { try { return new Date(ms).toLocaleDateString("ko-KR", { month:"short", day:"numeric" }); } catch { return ""; } };
+  function btn(label, cls, fn) { const b = document.createElement("button"); b.type = "button"; b.className = cls; b.textContent = label; b.addEventListener("click", fn); return b; }
+  function el(tag, cls, txt) { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  let toastT; function toast(msg) { els.toast.textContent = msg; els.toast.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (els.toast.hidden = true), 2200); }
+
+  function stat(k, v, s) { const d = el("div", "stat"); d.append(el("div", "k", k), el("div", "v", v)); if (s) d.append(el("div", "s", s)); return d; }
+
+  function practicePanel(it) {
+    const p = el("div", "practice");
+    if (P.err) p.append(el("div", "notice warn", P.err));
+    if (P.phase === "idle" || P.phase === "starting") {
+      p.append(el("div", "hint", P.phase === "starting" ? "마이크를 켜는 중… 브라우저가 묻으면 '허용'을 눌러 주세요."
+        : micPerm === "granted" ? "마이크 허용됨. 바로 녹음할 수 있어요. 읽고 나서 정지를 누르세요."
+        : "문장을 소리 내어 읽고 정지를 누르세요. 처음 한 번만 마이크 허용을 묻습니다."));
+      if (isFile && micPerm !== "granted") p.append(el("div", "notice warn", "파일을 직접 열면 Chrome이 권한을 기억하지 못해 매번 묻습니다. 폴더에서 python3 -m http.server 8000 을 실행하고 http://localhost:8000 으로 열면 한 번만 허용하면 됩니다."));
+      if (micPerm === "denied") p.append(el("div", "notice warn", "마이크가 차단되어 있어요. 주소창 왼쪽 아이콘에서 마이크를 '허용'으로 바꿔 주세요."));
+      const r = el("div", "row"); const b = btn(P.result ? "다시 녹음" : "● 녹음 시작", "rec", () => startPractice(it)); b.disabled = P.phase === "starting" || !canRecord || !window.isSecureContext; r.append(b); r.append(btn("닫기", "ghost", () => { openId = null; resetPractice(false); render(); })); p.append(r);
+    } else if (P.phase === "rec" || P.phase === "finishing") {
+      const m = el("div", "meter"); m.append(document.createElement("i")); p.append(m);
+      p.append(el("div", "live", SR ? "듣는 중…" : "녹음 중…"));
+      const r = el("div", "row"); const b = btn(P.phase === "rec" ? "■ 정지하고 평가" : "분석 중…", "primary", () => stopPractice(it)); b.disabled = P.phase !== "rec"; r.append(b); p.append(r);
+    }
+    if (P.result && P.phase !== "rec" && P.phase !== "finishing") p.append(...resultNodes(it, P.result));
+    return p;
+  }
+
+  function resultNodes(it, R) {
+    const nodes = [];
+    if (R.score != null) {
+      const sc = el("div", "score"); sc.append(el("span", "n", R.score + "%"),
+        el("span", "l", R.score >= 90 ? "또렷하게 전달됐어요" : R.score >= 70 ? "대부분 전달됐어요. 빨간 단어를 다시 연습해 보세요" : "알아듣기 어려운 부분이 많아요. 천천히 따라 읽어 보세요"));
+      nodes.push(sc);
+      const d = el("div", "diff");
+      R.tk.forEach((w, i) => { const n = norm(w); const s = el("span", !n ? "skip" : R.ok.has(i) ? "ok" : "miss", w); d.append(s, document.createTextNode(" ")); });
+      nodes.push(d);
+      nodes.push(el("div", "hint", "초록 = 인식됨, 빨강 취소선 = 인식되지 않음. 인식기가 다른 단어로 들었거나 뭉개진 단어예요."));
+    } else if (R.hasSR) {
+      nodes.push(el("div", "notice warn", "말소리를 인식하지 못했어요. 마이크에 조금 더 가까이, 또박또박 읽어 보세요."));
+    }
+    const st = el("div", "stats");
+    if (R.wpm) st.append(stat("속도", R.wpm + " wpm", R.wpm > 175 ? "빠른 편이에요. 면접에서는 130~160이 편해요" : R.wpm < 110 ? "느린 편이에요. 원어민은 보통 140~160" : "알맞은 속도예요"));
+    if (R.pauses != null) st.append(stat("멈춤", R.pauses + "번", R.pauses ? "가장 긴 멈춤 " + (R.longest / 1000).toFixed(1) + "초" : "끊김 없이 읽었어요"));
+    if (R.spanMs) st.append(stat("발화 길이", (R.spanMs / 1000).toFixed(1) + "초", "원어민 예상 " + secs(R.tk.length, +els.rate.value) + "초"));
+    if (st.children.length) nodes.push(st);
+    if (R.pauses > 0) nodes.push(el("div", "hint", "쉼표(,)나 대시(—) 앞뒤의 짧은 멈춤은 자연스러워요. 단어 중간이나 연음 구간에서 끊겼다면 그 부분만 반복해 보세요."));
+    if (P.audioURL) { const a = document.createElement("audio"); a.controls = true; a.src = P.audioURL; nodes.push(el("div", "hint", "내 녹음 (이 기기에만 있어요)"), a); }
+    const row = el("div", "row"); row.append(btn("원어민 듣기", "", () => speak(it.text, it.id)), btn("다시 녹음", "rec", () => startPractice(it)), btn("닫기", "ghost", () => { openId = null; resetPractice(false); render(); })); nodes.push(row);
+    return nodes;
+  }
+
+  function render() {
+    els.cards.innerHTML = "";
+    els.count.textContent = items.length ? `· ${items.length}` : "";
+    els.empty.hidden = items.length > 0;
+    for (const it of items) {
+      const li = el("li", "card"); li.dataset.id = it.id;
+      if (it.id === playingId) li.classList.add("playing");
+      const ann = Array.isArray(it.stress) ? it : autoAnn(it.text);
+      const say = el("button", "say"); say.type = "button"; say.setAttribute("aria-label", "재생: " + it.text);
+      const p = el("span", "play"); p.innerHTML = PLAY;
+      const t = el("span", "text" + (showMarks ? "" : " plain")); t.appendChild(wordSpans(it.text, ann));
+      say.append(p, t); say.addEventListener("click", () => speak(it.text, it.id));
+      const meta = el("div", "meta"); meta.append(el("span", "facts", `${facts(it.text)} · ${fmtDate(it.createdAt)}`));
+      let acts;
+      if (confirmId === it.id) {
+        acts = el("div", "confirm"); acts.append(el("span", "", "이 문장을 삭제할까요?"), btn("삭제", "ghost danger", () => remove(it.id)), btn("취소", "ghost", () => { confirmId = null; render(); }));
+      } else {
+        acts = el("div", "actions");
+        acts.append(btn("천천히", "ghost", () => speak(it.text, it.id, 0.75)),
+          btn(openId === it.id ? "연습 접기" : "🎙 녹음 연습", "ghost", () => { if (openId === it.id) { openId = null; resetPractice(false); } else { resetPractice(false); openId = it.id; P.id = it.id; } render(); }),
+          btn("삭제", "ghost danger", () => { confirmId = it.id; render(); }));
+      }
+      meta.append(acts); li.append(say, meta);
+      if (openId === it.id) li.append(practicePanel(it));
+      els.cards.appendChild(li);
+    }
+  }
+
+  // ---------- composer ----------
+  const onDraft = () => { els.save.disabled = !els.text.value.trim(); els.draftFacts.textContent = facts(els.text.value); };
+  els.text.addEventListener("input", onDraft);
+  els.text.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) els.form.requestSubmit(); });
+  els.preview.addEventListener("click", () => { const v = els.text.value.trim(); if (v) speak(v, "__draft"); });
+  els.form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = els.text.value.trim().replace(/^["“”]+|["“”]+$/g, "").trim();
+    if (!text) return;
+    items.unshift({ id: "s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), text, createdAt: Date.now() });
+    if (!persist()) toast("이 브라우저는 저장을 막고 있어요. 새로고침하면 사라집니다.");
+    else toast("저장했어요");
+    els.text.value = ""; onDraft(); render();
+  });
+  function remove(id) {
+    confirmId = null; if (playingId === id) stopTTS(); if (openId === id) { openId = null; resetPractice(false); }
+    items = items.filter((i) => i.id !== id); persist(); render(); toast("삭제했어요");
+  }
+
+  window.addEventListener("pagehide", () => { stopTTS(); resetPractice(false); releaseMic(); });
+  // test hook (no effect on users)
+  window.__sd = { align, analyze, norm, autoAnn };
+  render();
+})();
+</script>
+</body>
+</html>
